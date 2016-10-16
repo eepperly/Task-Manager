@@ -1,7 +1,14 @@
 #include "project.h"
 #include "task.h"
+#include "task_manager.h"
 #include <iostream>
 
+int main(){
+  TaskManager tm = TaskManager(std::cout, std::cin);
+  tm.exec("");
+}
+
+/*
 int main(){
   Project proj1 = Project("General");
   Project proj2 = Project("School");
@@ -24,3 +31,4 @@ int main(){
 
   return 0;
 }
+*/
