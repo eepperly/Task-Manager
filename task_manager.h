@@ -21,6 +21,7 @@ class TaskManager{
   // TaskManager(string fName, ostream* os, istream* is);
   ~TaskManager();
   int exec(string cmd); // return 0 if command executed successfully
+  void print_blankline();
  private:
   string fName; // file name of save file
   vector<Project*>* projects;
@@ -47,6 +48,7 @@ class TaskManager{
   int cmd_create_and_add_task();
   // int cmd_set_current_project();
   // int cmd_set_current_task();
+  int cmd_display_all_projects();
   int cmd_display_current_project();
   int cmd_display_current_task();
 };

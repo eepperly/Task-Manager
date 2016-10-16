@@ -5,7 +5,14 @@
 
 int main(){
   TaskManager tm = TaskManager(std::cout, std::cin);
-  tm.exec("");
+  std::string input;
+  while (true){
+    std::cout << ">> ";
+    std::getline(std::cin, input);
+    tm.print_blankline();
+    tm.exec(input);
+    tm.print_blankline();
+  }
 }
 
 /*

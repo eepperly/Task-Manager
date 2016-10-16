@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 
+#include "utils.h"
 #include "project.h"
 #include "task.h"
 #include "task_manager.h"
@@ -64,26 +65,73 @@ Task* TaskManager::create_task(){
 }
 
 void TaskManager::setCurrProj(Project* p){
-  this->os << "Setting " << p->getName() << " to current project..." << std::endl;
+  this->os << "Setting \"" << p->getName() << "\" to current project..." << std::endl;
   this->currProj = p;
 }
 
 void TaskManager::setCurrTask(Task* t){
-  this->os << "Setting " << t->getTitle() << "to current task..." << std::endl;
+  this->os << "Setting \"" << t->getTitle() << "\" to current task..." << std::endl;
   this->currTask = t;
 }
 
 // Execute
 
 int TaskManager::exec(string cmd){
+  vector<string> splitBySpace = split(cmd, ' ');
+  if (splitBySpace.size() == 0){
+    return 0; // no command entered
+  }
+  if (splitBySpace[0] == "make" || splitBySpace[0] == "create"){
+   if (splitBySpace.size() == 1){
+      this->os << "Must specificy which object to " << splitBySpace[0] << std::endl;
+      return 1;
+    }
+   if (splitBySpace[1] == "project"){
+      return cmd_create_and_add_project();
+   } else if (splitBySpace[1] ==  "task"){
+      return cmd_create_and_add_task();
+   } else{
+      this->os << "Cannot create object of type \"" << splitBySpace[1] << "\""
+	       << std::endl;
+      return 1;
+   }
+  } else if (splitBySpace[0] == "display" || splitBySpace[0] == "show"){
+    if (splitBySpace.size() == 1){
+      return cmd_display_all_projects();
+    }
+
+    if (splitBySpace[1] == "project"){
+      return cmd_display_current_project();
+    } else if (splitBySpace[1] == "task") {
+      return cmd_display_current_task();
+    } else if (splitBySpace[1] == "all" || splitBySpace[1] == "projects"){
+      return cmd_display_all_projects();
+    } else{
+      this->os << "Cannot display \"" << splitBySpace[1] << "\""
+	       << std::endl;
+      return 1;
+    }
+  } else {
+    return 1;
+  }
+}
+
+void TaskManager::print_blankline(){
+  this->os << std::endl;
+}
+
+/*
+int TaskManager::exec(string cmd){
   this->os << "This is a hard-coded test" << std::endl;
   cmd_create_and_add_project();
   cmd_create_and_add_task();
   cmd_create_and_add_task();
+  cmd_display_all_projects();
   cmd_display_current_project();
   cmd_display_current_task();
   return 0;
 }
+*/
 
 // Commands
 
@@ -100,6 +148,10 @@ int TaskManager::cmd_create_and_add_project(){
 }
 
 int TaskManager::cmd_create_and_add_task(){
+  if (currProj == NULL){
+    this->os << "ERROR: You must have a project to create a task!" << std::endl;
+    return 1;
+  }
   Task* task = this->create_task();
   if (task == NULL){
     this->os << "ERROR: Task was not created!" << std::endl;
@@ -111,12 +163,27 @@ int TaskManager::cmd_create_and_add_task(){
   return 0;
 }
 
+int TaskManager::cmd_display_all_projects(){
+  for (int i=0;i<projects->size();i++){
+    this->os << i << "\t" << projects->at(i)->getName() << std::endl;
+  }
+  return 0;
+}
+
 int TaskManager::cmd_display_current_project(){
+  if (currProj == NULL){
+    this->os << "No current project" << std::endl;
+    return 1;
+  }
   this->os << *currProj << std::endl;
   return 0;
 }
 
 int TaskManager::cmd_display_current_task(){
+  if (currTask == NULL){
+    this->os << "No current task" << std::endl;
+    return 1;
+  }
   this->os << *currTask << std::endl;
   return 0;
 }
