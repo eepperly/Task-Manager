@@ -1,10 +1,12 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include "utils.h"
 #include "project.h"
 #include "task.h"
 #include "task_manager.h"
+#include "load_save.h"
 
 using std::ostream;
 using std::istream;
@@ -15,6 +17,15 @@ TaskManager::TaskManager(ostream & os, istream & is) : os(os), is(is) {
   // this->is = is;
   this->currProj = NULL;
   this->currTask = NULL;
+
+  this->navCmds = new stack<string>();
+  this->projects = new vector<Project*>();
+}
+
+TaskManager::TaskManager(string fName, ostream & os, istream & is) : os(os), is(is) {
+  this->currProj = NULL;
+  this->currTask = NULL;
+  this->fName = fName;
 
   this->navCmds = new stack<string>();
   this->projects = new vector<Project*>();
@@ -64,15 +75,60 @@ Task* TaskManager::create_task(){
   return newTask;
 }
 
+vector<Project*>* TaskManager::getProject() const{ return this->projects; }
+
 void TaskManager::setCurrProj(Project* p){
   this->os << "Setting \"" << p->getName() << "\" to current project..." << std::endl;
   this->currProj = p;
 }
 
+Project* TaskManager::getCurrProj() const{ return this->currProj; }
+
 void TaskManager::setCurrTask(Task* t){
   this->os << "Setting \"" << t->getTitle() << "\" to current task..." << std::endl;
   this->currTask = t;
 }
+
+Task* TaskManager::getCurrTask() const{ return this->currTask; }
+
+string TaskManager::getJSON() const{
+  std::ostringstream oss;
+  std::cout << "Hey from line 96" << std::endl;
+  oss << "{" << std::endl;
+  oss << "  \"save_file\": \"" << fName << "\"," << std::endl;
+  oss << "  \"current_project\": ";
+  if (currProj == NULL){
+    oss << "null," << std::endl;
+  } else{
+    oss << indent(currProj->getJSON(), "  ") << "," << std::endl;
+  }
+  std::cout << "Hey from line 105" << std::endl;
+  oss << "  \"current_task\": ";
+  if (currTask == NULL){
+    oss << "null," << std::endl;
+  } else{
+    oss << indent(currTask->getJSON(), "  ") << "," << std::endl;
+  }
+  std::cout << "Hey from line 112" << std::endl;
+  oss << "  \"tasks\": [" << std::endl;
+  std::cout << "Project size: " << projects->size() << std::endl;
+  if (projects->size() > 1){
+    for (int i=0;i<projects->size()-1;i++){
+      std::cout << "Hey from line 115" << std::endl;
+      oss << indent(projects->at(i)->getJSON(), "    ") << "," << std::endl;
+    }
+  }
+  if (projects->size() != 0){
+    std::cout << "Hey from line 118" << std::endl;
+    oss << indent(projects->back()->getJSON(), "    ") << std::endl;
+  }
+  std::cout << "Hey from line 120" << std::endl;
+  oss << "  ]" << std::endl;
+  oss << "}";
+  return oss.str();
+}
+
+void TaskManager::setFName(string fName) { this->fName = fName; }
 
 // Execute
 
@@ -111,6 +167,8 @@ int TaskManager::exec(string cmd){
 	       << std::endl;
       return 1;
     }
+  } else if (splitBySpace[0] == "save"){
+    return cmd_save();
   } else {
     return 1;
   }
@@ -185,5 +243,17 @@ int TaskManager::cmd_display_current_task(){
     return 1;
   }
   this->os << *currTask << std::endl;
+  return 0;
+}
+
+int TaskManager::cmd_save(){
+  if (fName == ""){
+    this->os << "Input name of file to save in: ";
+    string saveFile;
+    std::getline(this->is,saveFile);
+    this->setFName(saveFile);
+  }
+  Saver saver = Saver(this, this->fName);
+  saver.save();
   return 0;
 }

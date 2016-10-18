@@ -13,6 +13,7 @@ class Project{
   const std::vector<Task*> & getTasks() const;
   std::string getName() const;
   friend ostream &operator << (ostream &os, Project &p);
+  std::string getJSON() const;
  private:
   std::string name;
   std::vector<Task*> tasks;

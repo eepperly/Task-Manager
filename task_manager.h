@@ -18,13 +18,17 @@ using std::stack;
 class TaskManager{
  public:
   TaskManager(ostream & os, istream & is);
-  // TaskManager(string fName, ostream* os, istream* is);
+  TaskManager(string fName, ostream & os, istream & is);
   ~TaskManager();
   int exec(string cmd); // return 0 if command executed successfully
   void print_blankline();
+  string getJSON() const;
  private:
   string fName; // file name of save file
+  void setFName(std::string fName);
+  
   vector<Project*>* projects;
+  vector<Project*>* getProject() const;
   ostream& os;
   istream& is;
   
@@ -32,6 +36,8 @@ class TaskManager{
   Task* currTask;
   void setCurrProj(Project* p);
   void setCurrTask(Task* t);
+  Project* getCurrProj() const;
+  Task* getCurrTask() const;
 
   stack<string>* navCmds; 
   
@@ -51,6 +57,7 @@ class TaskManager{
   int cmd_display_all_projects();
   int cmd_display_current_project();
   int cmd_display_current_task();
+  int cmd_save();
 };
 
 #endif // _TASK_MANAGER_H

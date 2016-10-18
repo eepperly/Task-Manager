@@ -17,6 +17,7 @@ class Task{
   std::string getTitle() const;
   std::string getDetails() const;
   const std::vector<Task> & getSubtasks() const;
+  std::string getJSON() const;
   void setProject(Project * p);
   friend ostream &operator << (ostream &os, Task &p);
  private:

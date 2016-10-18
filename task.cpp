@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 Task::Task(std::string title){
   this->title = title;
@@ -37,4 +38,13 @@ ostream &operator << (ostream &os, Task &t){
     os << "\t* " << subtask.getTitle() << std::endl;
   }
   return os;
+}
+
+std::string Task::getJSON() const{
+  std::ostringstream oss;
+  oss << "{" << std::endl;
+  oss << "  \"title\": \"" << title << "\"," << std::endl;
+  oss << "  \"details\": \"" << details << "\"" << std::endl;
+  oss << "}";
+  return oss.str();
 }
