@@ -118,14 +118,17 @@ Tree * parse(std::queue<Token*>* tokens){
   Tree* parse_tree_loc = parse_tree;
   Token* token;
   TokenType top_type;
-
+  std::cout << (*parse_tree) << std::endl;
   int flag;
-
   while (true){
+    std::cout << "MOOSE" << std::endl;
     if (tokens->empty()){
       break;
     }
-
+    
+    std::cout << parse_tree << std::endl;
+    std::cout << *parse_tree << std::endl;
+    std::cout << "MOOSE" << std::endl;
     token = tokens->front();
     tokens->pop();
     top_type = tokenStack.top()->getType();
@@ -245,7 +248,7 @@ Tree::Tree(string content){
 }
 
 Tree::~Tree(){
-  for (Tree* child : children){
+  for (Tree* child : *children){
     delete child;
   }
   delete &children;
@@ -256,7 +259,7 @@ string Tree::getContent() const{
   return this->content;
 }
 
-list<Tree*> Tree::getChildren() const{
+list<Tree*>* Tree::getChildren() const{
   return this->children;
 }
 
@@ -269,7 +272,7 @@ void Tree::setParent(Tree* parent){
 }
 
 Tree* Tree::addChild(Tree* newChild){
-  children.push_back(newChild);
+  children->push_back(newChild);
   newChild->setParent(this);
   return newChild;
 }
@@ -282,7 +285,7 @@ Tree* Tree::addChild(string child){
 ostream & operator <<(ostream & os, Tree & tree){
   os << tree.getContent();
   ostringstream oss;
-  for (Tree* child : tree.getChildren()){
+  for (Tree* child : *tree.getChildren()){
     oss << std::endl << *child;
     os << indent(oss.str(), "  ");
     oss.str("");

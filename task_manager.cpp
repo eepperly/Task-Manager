@@ -93,7 +93,6 @@ Task* TaskManager::getCurrTask() const{ return this->currTask; }
 
 string TaskManager::getJSON() const{
   std::ostringstream oss;
-  std::cout << "Hey from line 96" << std::endl;
   oss << "{" << std::endl;
   oss << "  \"save_file\": \"" << fName << "\"," << std::endl;
   oss << "  \"current_project\": ";
@@ -102,31 +101,35 @@ string TaskManager::getJSON() const{
   } else{
     oss << indent(currProj->getJSON(), "  ") << "," << std::endl;
   }
-  std::cout << "Hey from line 105" << std::endl;
   oss << "  \"current_task\": ";
   if (currTask == NULL){
     oss << "null," << std::endl;
   } else{
     oss << indent(currTask->getJSON(), "  ") << "," << std::endl;
   }
-  std::cout << "Hey from line 112" << std::endl;
-  oss << "  \"tasks\": [" << std::endl;
-  std::cout << "Project size: " << projects->size() << std::endl;
+  oss << "  \"projects\": [" << std::endl;
   if (projects->size() > 1){
     for (int i=0;i<projects->size()-1;i++){
-      std::cout << "Hey from line 115" << std::endl;
       oss << indent(projects->at(i)->getJSON(), "    ") << "," << std::endl;
     }
   }
   if (projects->size() != 0){
-    std::cout << "Hey from line 118" << std::endl;
     oss << indent(projects->back()->getJSON(), "    ") << std::endl;
   }
-  std::cout << "Hey from line 120" << std::endl;
   oss << "  ]" << std::endl;
   oss << "}";
   return oss.str();
 }
+
+void copy_task_manager(TaskManager& copy_to, TaskManager& copy_from){
+  copy_to.projects = copy_from.projects;
+  copy_to.currProj = copy_from.currProj;
+  copy_to.currTask = copy_from.currTask;
+  copy_to.navCmds  = copy_from.navCmds;
+  copy_to.fName    = copy_from.fName;
+}
+
+void TaskManager::addProj(Project* p){ this->projects->push_back(p); }
 
 void TaskManager::setFName(string fName) { this->fName = fName; }
 
@@ -169,6 +172,8 @@ int TaskManager::exec(string cmd){
     }
   } else if (splitBySpace[0] == "save"){
     return cmd_save();
+  } else if (splitBySpace[0] == "load"){
+    return cmd_load();
   } else {
     return 1;
   }
@@ -256,4 +261,18 @@ int TaskManager::cmd_save(){
   Saver saver = Saver(this, this->fName);
   saver.save();
   return 0;
+}
+
+int TaskManager::cmd_load(){
+  if (fName == ""){
+    this->os << "Input name of file to load: ";
+    string saveFile;
+    std::getline(this->is,saveFile);
+    this->setFName(saveFile);
+  }
+  Loader loader = Loader(this, this->fName);
+  int flag = loader.load();
+  std::cout << "Hi" << std::endl;
+  copy_task_manager(*this, *loader.getTaskManager());
+  return flag;
 }

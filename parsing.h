@@ -31,7 +31,7 @@ class Tree{
   Tree(std::string content);
   ~Tree();
   std::string getContent() const;
-  std::list<Tree*> getChildren() const;
+  std::list<Tree*>* getChildren() const;
   Tree* getParent() const;
   void setParent(Tree* parent);
   Tree* addChild(Tree* newChild);
@@ -39,7 +39,7 @@ class Tree{
  private:
   Tree* parent;
   std::string content;
-  std::list<Tree*> children;
+  std::list<Tree*>* children;
 };
 
 std::ostream & operator <<(std::ostream & os, Tree & tree);

@@ -39,11 +39,11 @@ std::string Project::getJSON() const{
   oss << "  \"tasks\": [" << std::endl;
   if (tasks.size() > 1){
     for (int i=0;i<tasks.size()-1;i++){
-      oss << indent(tasks.at(i)->getJSON(),"  ") << "," << std::endl;
+      oss << indent(tasks.at(i)->getJSON(),"    ") << "," << std::endl;
     }
   }
   if (tasks.size() != 0){
-    oss << indent(tasks.back()->getJSON(), "  ") << std::endl;
+    oss << indent(tasks.back()->getJSON(), "    ") << std::endl;
   }
   oss << "  ]" << std::endl;
   oss << "}";

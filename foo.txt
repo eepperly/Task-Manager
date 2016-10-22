@@ -1,0 +1,48 @@
+{
+  "save_file": "foo.txt",
+  "current_project":   {
+    "name": "School",
+    "tasks": [
+      {
+        "title": "Eat lunch",
+        "details": ""
+      },
+      {
+        "title": "Do homework",
+        "details": "Not fun :("
+      },
+      {
+        "title": "See Sierra",
+        "details": ""
+      }
+    ]
+  },
+  "current_task":   {
+    "title": "Eat lunch",
+    "details": ""
+  },
+  "projects": [
+    {
+      "name": "School",
+      "tasks": [
+        {
+          "title": "Eat lunch",
+          "details": ""
+        },
+        {
+          "title": "Do homework",
+          "details": "Not fun :("
+        },
+        {
+          "title": "See Sierra",
+          "details": ""
+        }
+      ]
+    },
+    {
+      "name": "Life",
+      "tasks": [
+      ]
+    }
+  ]
+}

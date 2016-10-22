@@ -23,6 +23,11 @@ class TaskManager{
   int exec(string cmd); // return 0 if command executed successfully
   void print_blankline();
   string getJSON() const;
+  friend void copy_task_manager(TaskManager& copy_to, TaskManager& copy_from);
+
+  void setCurrProj(Project* p);
+  void setCurrTask(Task* t);
+  void addProj(Project* p);
  private:
   string fName; // file name of save file
   void setFName(std::string fName);
@@ -34,8 +39,6 @@ class TaskManager{
   
   Project* currProj;
   Task* currTask;
-  void setCurrProj(Project* p);
-  void setCurrTask(Task* t);
   Project* getCurrProj() const;
   Task* getCurrTask() const;
 
@@ -58,6 +61,7 @@ class TaskManager{
   int cmd_display_current_project();
   int cmd_display_current_task();
   int cmd_save();
+  int cmd_load();
 };
 
 #endif // _TASK_MANAGER_H
