@@ -118,7 +118,9 @@ Tree * parse(std::queue<Token*>* tokens){
   Tree* parse_tree_loc = parse_tree;
   Token* token;
   TokenType top_type;
+  std::cout << "Testing for seg fault..." << std::endl;
   std::cout << (*parse_tree) << std::endl;
+  std::cout << "Wasn't here" << std::endl;
   int flag;
   while (true){
     std::cout << "MOOSE" << std::endl;
